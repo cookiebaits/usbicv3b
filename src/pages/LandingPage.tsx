@@ -106,9 +106,9 @@ export default function LandingPage() {
             <div className="w-9 h-9 bg-primary-600 rounded-xl flex items-center justify-center shadow-sm">
               <Shield className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl text-slate-900">International Credit Unions</span>
+            <span className="font-bold text-xl text-slate-400">International Credit Unions</span>
           </div>
-          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
             <a href="#features" className="hover:text-slate-900 transition-colors">Features</a>
             <a href="#security" className="hover:text-slate-900 transition-colors">Security</a>
             <a href="#faq" className="hover:text-slate-900 transition-colors">FAQ</a>
@@ -388,7 +388,7 @@ export default function LandingPage() {
             <div>
               <p className="font-semibold text-white text-sm mb-4">Support</p>
               <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> support@International Credit Unions.io</li>
+                <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> support@usbanking.icu</li>
                 <li className="flex items-center gap-2"><Phone className="w-4 h-4" /> 1-800-SECURE-1</li>
               </ul>
             </div>

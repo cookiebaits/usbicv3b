@@ -252,9 +252,9 @@ export default function LandingPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { label: 'Response Time', value: '< 2 min', sub: 'Avg. support response', icon: Phone },
-                { label: 'Uptime SLA', value: '99.99%', sub: 'Infrastructure guarantee', icon: Zap },
-                { label: 'Insured', value: '$250K', sub: 'FDIC per depositor', icon: Shield },
+                { label: 'Response Time', value: 'Quick Transfers', sub: 'Most sent within 2 days', icon: Rocket },
+                { label: 'Uptime SLA', value: '99.99%', sub: 'Uptime guarantee', icon: Zap },
+                { label: 'Insured', value: '40+ Countries Supported', sub: 'Global Accessibility', icon: Globe },
                 { label: 'Encryption', value: 'AES-256', sub: 'Military-grade standard', icon: Lock },
               ].map((item) => {
                 const Icon = item.icon;

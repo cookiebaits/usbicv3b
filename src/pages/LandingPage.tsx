@@ -47,7 +47,7 @@ const features = [
     title: 'Free International Banking',
     desc: 'Open checking and savings accounts with no monthly fees, minimum balances, or hidden charges.',
     items: ['No Monthly Fees', 'Free Checking & Savings', 'FDIC Insured up to $250K'],
-    color: 'bg-emerald-50 text-emerald-600',
+    color: 'bg-emerald-50 text-emerald-300',
   },
 ];
 
@@ -208,7 +208,7 @@ export default function LandingPage() {
                   {f.items.map((item) => (
                     <li key={item} className="flex items-center gap-2.5 text-sm text-slate-700">
                       <div className="w-5 h-5 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
-                        <Check className="w-3 h-3 text-emerald-600" />
+                        <Check className="w-3 h-3 text-emerald-300" />
                       </div>
                       {item}
                     </li>

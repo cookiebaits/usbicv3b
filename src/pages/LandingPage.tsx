@@ -106,7 +106,7 @@ export default function LandingPage() {
             <div className="w-9 h-9 bg-primary-600 rounded-xl flex items-center justify-center shadow-sm">
               <Shield className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl text-slate-900">SecureBank</span>
+            <span className="font-bold text-xl text-slate-900">International Credit Unions</span>
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
             <a href="#features" className="hover:text-slate-900 transition-colors">Features</a>
@@ -190,7 +190,7 @@ export default function LandingPage() {
 
       <section id="features" className="py-20 max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-14">
-          <p className="text-sm font-semibold text-primary-600 uppercase tracking-wider mb-3">Why SecureBank</p>
+          <p className="text-sm font-semibold text-primary-600 uppercase tracking-wider mb-3">Why International Credit Unions</p>
           <h2 className="text-4xl font-bold text-slate-900 mb-4">Everything you need to bank better</h2>
           <p className="text-lg text-slate-500 max-w-xl mx-auto">Built from the ground up with security, speed, and simplicity as core principles.</p>
         </div>
@@ -366,7 +366,7 @@ export default function LandingPage() {
                 <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
                   <Shield className="w-4 h-4 text-white" />
                 </div>
-                <span className="font-bold text-white">SecureBank</span>
+                <span className="font-bold text-white">International Credit Unions</span>
               </div>
               <p className="text-sm leading-relaxed">Free banking built for the modern world. Secure, fast, and always improving.</p>
             </div>
@@ -388,7 +388,7 @@ export default function LandingPage() {
             <div>
               <p className="font-semibold text-white text-sm mb-4">Support</p>
               <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> support@securebank.io</li>
+                <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> support@International Credit Unions.io</li>
                 <li className="flex items-center gap-2"><Phone className="w-4 h-4" /> 1-800-SECURE-1</li>
               </ul>
             </div>

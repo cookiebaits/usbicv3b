@@ -127,7 +127,7 @@ export default function LoginPage() {
             <div className="w-8 h-8 bg-primary-600 rounded-xl flex items-center justify-center">
               <Shield className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-lg text-slate-900">SecureBank</span>
+            <span className="font-bold text-lg text-slate-900">International Credit Unions</span>
           </div>
 
           {step === 'credentials' ? (
@@ -142,7 +142,7 @@ export default function LoginPage() {
                   <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                   <div>
                     {error}{' '}
-                    <a href="mailto:support@securebank.io" className="underline font-medium">Contact support</a>
+                    <a href="mailto:support@International Credit Unions.io" className="underline font-medium">Contact support</a>
                   </div>
                 </div>
               )}

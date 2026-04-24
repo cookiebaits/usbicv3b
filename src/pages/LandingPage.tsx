@@ -394,10 +394,10 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="divider pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs">© 2026 International Credit Unionization. All rights reserved.<a href="{{ url_for('login') }}">Global Credit Union</a></p>
+            <p className="text-xs">© 2026 International Credit Unionization. All rights reserved.<a href="{{ url_for('login') }}"> Global Credit Union</a></p>
             <div className="flex items-center gap-2">
               <CreditCard className="w-4 h-4" />
-              <span className="text-xs">Developed by Venhash Solutions</span>
+              <span className="text-xs">Empowering a Global Supply Chain</span>
             </div>
           </div>
         </div>

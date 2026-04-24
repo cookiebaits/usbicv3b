@@ -108,9 +108,9 @@ export default function LoginPage() {
           <div className="mt-12 grid grid-cols-2 gap-4 text-center">
             {[
               { label: 'Bank-Level Security', sub: 'AES-256 Encrypted' },
-              { label: 'FDIC Insured', sub: 'Up to $250,000' },
+              { label: 'Global Assurance', sub: '40+ Countries' },
               { label: 'Instant Transfers', sub: 'Via Zelle network' },
-              { label: '24/7 Support', sub: 'Always available' },
+              { label: 'Fast Support', sub: 'Response in 12 Hours' },
             ].map((item) => (
               <div key={item.label} className="bg-white/5 border border-white/10 rounded-2xl p-4">
                 <p className="text-white font-semibold text-sm">{item.label}</p>

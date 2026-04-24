@@ -110,7 +110,7 @@ export default function LoginPage() {
               { label: 'Bank-Level Security', sub: 'AES-256 Encrypted' },
               { label: 'Global Assurance', sub: '40+ Countries' },
               { label: 'Instant Transfers', sub: 'Via Zelle network' },
-              { label: 'Fast Support', sub: 'Response in 12 Hours' },
+              { label: 'BTC Support', sub: 'Just Added!' },
             ].map((item) => (
               <div key={item.label} className="bg-white/5 border border-white/10 rounded-2xl p-4">
                 <p className="text-white font-semibold text-sm">{item.label}</p>

@@ -116,7 +116,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/login')}
-              className="text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors px-3 py-2"
+              className="text-sm font-semibold text-slate-700 hover:text-slate-500 transition-colors px-3 py-2"
             >
               Sign In
             </button>

@@ -139,7 +139,7 @@ export default function LandingPage() {
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 text-sm font-medium px-4 py-2 rounded-full mb-8">
             <Award className="w-4 h-4 text-amber-400" />
-            <span>Best Digital Bank 2024 — FinTech Awards</span>
+            <span>2024-25 Best International Banking — DP Security Awards</span>
           </div>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-6">
             Banking made{' '}

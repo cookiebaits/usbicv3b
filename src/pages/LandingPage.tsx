@@ -389,7 +389,7 @@ export default function LandingPage() {
               <p className="font-semibold text-white text-sm mb-4">Support</p>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> support@usbanking.icu</li>
-                <li className="flex items-center gap-2"><Phone className="w-4 h-4" /> 1-800-SECURE-1</li>
+                <li className="flex items-center gap-2"><Phone className="w-4 h-4" /> 1-800-TIDI-BANK</li>
               </ul>
             </div>
           </div>

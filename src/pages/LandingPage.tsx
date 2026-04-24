@@ -108,7 +108,7 @@ export default function LandingPage() {
             </div>
             <span className="font-bold text-xl text-slate-900">International Credit Unions</span>
           </div>
-          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
             <a href="#features" className="hover:text-slate-900 transition-colors">Features</a>
             <a href="#security" className="hover:text-slate-900 transition-colors">Security</a>
             <a href="#faq" className="hover:text-slate-900 transition-colors">FAQ</a>

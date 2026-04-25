@@ -2,11 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Globe, Palette, Loader2, Check, AlertCircle, Save,
-  Upload, X, Mail, Phone, Instagram, Twitter, Facebook,
+  Upload, X, Mail, Phone, Instagram, Twitter, Facebook, Shield,
 } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 
-type SettingsTab = 'general' | 'appearance';
+type SettingsTab = 'general' | 'appearance' | 'security';
 
 interface Settings {
   siteName: string;
@@ -23,6 +23,8 @@ interface Settings {
   siteLogo: string;
   zelleLogo: string;
   twoFALogo: string;
+  adminUsername?: string;
+  adminPassword?: string;
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -105,6 +107,7 @@ export default function AdminSettingsPage() {
   const tabs: { id: SettingsTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'general', label: 'General', icon: Globe },
     { id: 'appearance', label: 'Appearance', icon: Palette },
+    { id: 'security', label: 'Security', icon: Shield },
   ];
 
   if (loading) {
@@ -213,6 +216,36 @@ export default function AdminSettingsPage() {
                   <label className="input-label">Terms of Service (HTML or plain text)</label>
                   <textarea className="input-field min-h-32 resize-y" value={settings.termsOfService} onChange={(e) => update('termsOfService', e.target.value)} placeholder="Enter terms of service content..." />
                 </div>
+              </div>
+            </div>
+          )}
+
+          {tab === 'security' && (
+            <div className="space-y-6">
+              <div className="card p-6 space-y-5">
+                <h2 className="font-semibold text-slate-900">Admin Credentials</h2>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="input-label">Admin Username</label>
+                    <input
+                      className="input-field"
+                      value={settings.adminUsername || ''}
+                      onChange={(e) => update('adminUsername', e.target.value)}
+                      placeholder="Admin"
+                    />
+                  </div>
+                  <div>
+                    <label className="input-label">New Admin Password</label>
+                    <input
+                      className="input-field"
+                      type="password"
+                      value={settings.adminPassword || ''}
+                      onChange={(e) => update('adminPassword', e.target.value)}
+                      placeholder="Leave blank to keep current"
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-slate-400">These credentials are used to access the admin portal.</p>
               </div>
             </div>
           )}

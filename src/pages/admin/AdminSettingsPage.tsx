@@ -5,6 +5,7 @@ import {
   Upload, X, Mail, Phone, Instagram, Twitter, Facebook, Shield,
 } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
+import { useSettings } from '../../context/SettingsContext';
 
 type SettingsTab = 'general' | 'appearance' | 'security';
 
@@ -46,6 +47,7 @@ const DEFAULT_SETTINGS: Settings = {
 
 export default function AdminSettingsPage() {
   const navigate = useNavigate();
+  const { updateSettings, refreshSettings } = useSettings();
   const [tab, setTab] = useState<SettingsTab>('general');
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
@@ -82,7 +84,13 @@ export default function AdminSettingsPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      await adminFetch('/api/admin/settings', { method: 'PUT', body: JSON.stringify(settings) });
+      const data = await adminFetch('/api/admin/settings', { method: 'PUT', body: JSON.stringify(settings) });
+      if (data.settings) {
+        updateSettings(data.settings);
+        setSettings({ ...DEFAULT_SETTINGS, ...data.settings });
+      } else {
+        await refreshSettings();
+      }
       showMsg('Settings saved successfully');
     } catch (err: unknown) {
       showMsg(err instanceof Error ? err.message : 'Failed to save settings.', true);

@@ -132,6 +132,7 @@ export default function AdminIPLogsPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [detailLog, setDetailLog] = useState<IPLog | null>(null);
+  const [activeSessions, setActiveSessions] = useState<IPLog[]>([]);
 
   const adminFetch = useCallback(async (url: string, options: RequestInit = {}) => {
     const token = localStorage.getItem('adminToken');
@@ -150,6 +151,7 @@ export default function AdminIPLogsPage() {
     try {
       const data = await adminFetch('/api/admin/iplogs');
       setLogs(data.logs || data.ipLogs || []);
+      setActiveSessions(data.activeSessions || []);
     } catch { /* handled */ }
     finally { setLoading(false); }
   }, [adminFetch]);
@@ -232,6 +234,7 @@ export default function AdminIPLogsPage() {
     try {
       await adminFetch(`/api/admin/users/${log.userId}/terminate`, { method: 'POST' });
       setTerminateConfirm(null);
+      setActiveSessions((prev) => prev.filter((s) => s.userId !== log.userId));
       showMsg(`Session terminated for ${log.userName || log.userEmail || 'user'}`);
     } catch (err: unknown) {
       showMsg(err instanceof Error ? err.message : 'Failed to terminate session.', true);
@@ -364,6 +367,57 @@ export default function AdminIPLogsPage() {
             ))}
           </div>
         </div>
+
+        {activeSessions.length > 0 && (
+          <div className="card overflow-hidden border-orange-100 shadow-orange-500/5">
+            <div className="bg-orange-50/50 px-6 py-4 border-b border-orange-100 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Wifi className="w-5 h-5 text-orange-600" />
+                <h2 className="font-bold text-orange-900">Active Sessions</h2>
+              </div>
+              <span className="text-xs font-bold text-orange-700 bg-white px-2 py-1 rounded-lg border border-orange-100">{activeSessions.length} Online</span>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-slate-50/50 border-b border-slate-100">
+                  <tr>
+                    {['User', 'IP Address', 'Location', 'Device', ''].map((h) => (
+                      <th key={h} className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-6 py-3 first:pl-6 last:pr-6">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {activeSessions.map((session) => (
+                    <tr key={session._id} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <p className="text-sm font-medium text-slate-900">{session.userName || '—'}</p>
+                        <p className="text-xs text-slate-400">{session.userEmail}</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <code className="text-xs font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">{session.ip}</code>
+                      </td>
+                      <td className="px-6 py-4 text-xs text-slate-500">
+                        {session.city ? `${session.city}, ` : ''}{session.country}
+                      </td>
+                      <td className="px-6 py-4 text-xs text-slate-500">
+                        {parseUA(session.userAgent || '').browser} · {parseUA(session.userAgent || '').os}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => setTerminateConfirm(session)}
+                          className="text-xs font-bold text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ml-auto"
+                        >
+                          <WifiOff className="w-3.5 h-3.5" />
+                          Terminate
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
         <div className="card overflow-hidden">
           {loading ? (

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Search, Filter, Check, X, Loader2,
   Trash2, UserCheck, Users, AlertCircle, MoreVertical,
-  ShieldOff, UserX, WifiOff, UserPlus,
+  ShieldOff, UserX, WifiOff, UserPlus, Key, Shield,
 } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { formatCurrency, formatDatetime } from '../../lib/api';
@@ -36,6 +36,8 @@ export default function AdminUsersPage() {
   const [confirmDelete, setConfirmDelete] = useState<User | null>(null);
   const [confirmTerminate, setConfirmTerminate] = useState<User | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState<User | null>(null);
+  const [newPassword, setNewPassword] = useState('');
   const [newUser, setNewUser] = useState({ fullName: '', username: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -148,6 +150,31 @@ export default function AdminUsersPage() {
     } finally { setActionLoading(null); }
   };
 
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!showPasswordModal) return;
+    setActionLoading('password');
+    try {
+      await adminFetch(`/api/admin/users/${showPasswordModal._id}`, { method: 'PUT', body: JSON.stringify({ password: newPassword }) });
+      setShowPasswordModal(null);
+      setNewPassword('');
+      showMsg('Password updated successfully');
+    } catch (err: unknown) {
+      showMsg(err instanceof Error ? err.message : 'Failed to update password.', true);
+    } finally { setActionLoading(null); }
+  };
+
+  const toggle2FA = async (user: User) => {
+    setActionLoading(user._id + '-2fa');
+    try {
+      await adminFetch(`/api/admin/users/${user._id}`, { method: 'PUT', body: JSON.stringify({ twoFAEnabled: !user.twoFAEnabled }) });
+      setUsers((prev) => prev.map((u) => u._id === user._id ? { ...u, twoFAEnabled: !u.twoFAEnabled } : u));
+      showMsg(`2FA ${!user.twoFAEnabled ? 'enabled' : 'disabled'} for ${user.fullName || user.username}`);
+    } catch (err: unknown) {
+      showMsg(err instanceof Error ? err.message : 'Failed.', true);
+    } finally { setActionLoading(null); }
+  };
+
   const bulkApprove = async () => {
     if (selected.size === 0) return;
     setActionLoading('bulk');
@@ -238,7 +265,7 @@ export default function AdminUsersPage() {
           </div>
         )}
 
-        <div className="card overflow-hidden">
+        <div className="card overflow-visible">
           {loading ? (
             <div className="flex items-center justify-center py-16">
               <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
@@ -294,7 +321,7 @@ export default function AdminUsersPage() {
                       </td>
                       <td className="px-4 py-4 text-xs text-slate-400">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}</td>
                       <td className="px-4 py-4 text-xs text-slate-400">{user.lastLogin ? formatDatetime(user.lastLogin) : '—'}</td>
-                      <td className="px-6 py-4 relative">
+                      <td className="px-6 py-4 relative overflow-visible">
                         <button
                           onClick={(e) => { e.stopPropagation(); setOpenMenu(openMenu === user._id ? null : user._id); }}
                           className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
@@ -302,7 +329,7 @@ export default function AdminUsersPage() {
                           <MoreVertical className="w-4 h-4" />
                         </button>
                         {openMenu === user._id && (
-                          <div className="absolute right-4 top-12 w-48 bg-white rounded-xl border border-slate-100 shadow-modal z-20 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                          <div className="absolute right-4 top-12 w-56 bg-white rounded-xl border border-slate-100 shadow-modal z-50 overflow-visible" onClick={(e) => e.stopPropagation()}>
                             {user.status !== 'active' && (
                               <button onClick={() => updateStatus(user._id, 'active')} disabled={!!actionLoading} className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-emerald-700 hover:bg-emerald-50 transition-colors">
                                 <UserCheck className="w-4 h-4" />Approve User
@@ -313,6 +340,12 @@ export default function AdminUsersPage() {
                                 <ShieldOff className="w-4 h-4" />Suspend User
                               </button>
                             )}
+                            <button onClick={() => { setShowPasswordModal(user); setOpenMenu(null); }} className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
+                              <Key className="w-4 h-4" />Change Password
+                            </button>
+                            <button onClick={() => { toggle2FA(user); setOpenMenu(null); }} className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
+                              <Shield className="w-4 h-4" />{user.twoFAEnabled ? 'Disable 2FA' : 'Enable 2FA'}
+                            </button>
                             <button onClick={() => { setConfirmTerminate(user); setOpenMenu(null); }} className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-orange-600 hover:bg-orange-50 transition-colors">
                               <WifiOff className="w-4 h-4" />Terminate Session
                             </button>
@@ -346,6 +379,45 @@ export default function AdminUsersPage() {
                   Delete
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {showPasswordModal && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-modal w-full max-w-sm p-8 animate-slide-up">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-bold text-slate-900 text-lg">Change Password</h3>
+                <button onClick={() => setShowPasswordModal(null)} className="text-slate-400 hover:text-slate-600">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <form onSubmit={handleUpdatePassword} className="space-y-4">
+                <p className="text-sm text-slate-500">Updating password for <strong>{showPasswordModal.fullName || showPasswordModal.username}</strong></p>
+                <div>
+                  <label className="input-label">New Password</label>
+                  <input
+                    className="input-field"
+                    type="password"
+                    required
+                    autoFocus
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="••••••••"
+                  />
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <button type="button" onClick={() => setShowPasswordModal(null)} className="btn-secondary flex-1">Cancel</button>
+                  <button
+                    type="submit"
+                    disabled={actionLoading === 'password'}
+                    className="flex-1 flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors disabled:opacity-50"
+                  >
+                    {actionLoading === 'password' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Key className="w-4 h-4" />}
+                    Update
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}

@@ -11,6 +11,7 @@ import {
   Shield,
 } from 'lucide-react';
 import { clearToken } from '../../hooks/useAuth';
+import { useSettings } from '../../context/SettingsContext';
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
@@ -30,6 +31,7 @@ interface SidebarProps {
 export default function Sidebar({ open, onClose, isMobile }: SidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { settings } = useSettings();
 
   const handleLogout = () => {
     clearToken();
@@ -45,10 +47,14 @@ export default function Sidebar({ open, onClose, isMobile }: SidebarProps) {
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-            <Shield className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-bold text-slate-900 text-lg">SecureBank</span>
+          {settings.siteLogo ? (
+            <img src={settings.siteLogo} alt="Logo" className="w-8 h-8 object-contain" />
+          ) : (
+            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+              <Shield className="w-4 h-4 text-white" />
+            </div>
+          )}
+          <span className="font-bold text-slate-900 text-lg">{settings.siteName}</span>
         </div>
         {isMobile && (
           <button onClick={onClose} className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 transition-colors">

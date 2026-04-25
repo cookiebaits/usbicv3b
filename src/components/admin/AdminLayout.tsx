@@ -4,6 +4,7 @@ import {
   LayoutDashboard, Users, Receipt, Globe, Settings,
   LogOut, Menu, X, Shield, ChevronRight, Bell,
 } from 'lucide-react';
+import { useSettings } from '../../context/SettingsContext';
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' },
@@ -16,6 +17,7 @@ const navItems = [
 function AdminSidebarContent({ onClose }: { onClose?: () => void }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { settings } = useSettings();
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -31,11 +33,15 @@ function AdminSidebarContent({ onClose }: { onClose?: () => void }) {
     <div className="flex flex-col h-full bg-slate-900">
       <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center shadow-lg">
-            <Shield className="w-4 h-4 text-white" />
-          </div>
+          {settings.siteLogo ? (
+            <img src={settings.siteLogo} alt="Logo" className="w-8 h-8 object-contain" />
+          ) : (
+            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center shadow-lg">
+              <Shield className="w-4 h-4 text-white" />
+            </div>
+          )}
           <div>
-            <p className="font-bold text-white text-sm leading-none">SecureBank</p>
+            <p className="font-bold text-white text-sm leading-none">{settings.siteName}</p>
             <p className="text-slate-400 text-xs mt-0.5">Admin Portal</p>
           </div>
         </div>

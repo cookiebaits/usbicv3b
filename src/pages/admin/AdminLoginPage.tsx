@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Shield, Eye, EyeOff, Lock, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Shield, Eye, EyeOff, Lock, Loader2, AlertCircle, ArrowLeft, Check } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [step, setStep] = useState<'credentials' | '2fa'>('credentials');
   const [adminId, setAdminId] = useState('');
   const [password, setPassword] = useState('');
@@ -11,6 +12,7 @@ export default function AdminLoginPage() {
   const [twoFACode, setTwoFACode] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success] = useState(location.state?.message || '');
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -106,6 +108,13 @@ export default function AdminLoginPage() {
             <div className="flex items-start gap-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl p-4 mb-6 text-sm">
               <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <span>{error}</span>
+            </div>
+          )}
+
+          {success && (
+            <div className="flex items-start gap-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl p-4 mb-6 text-sm">
+              <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
+              <span>{success}</span>
             </div>
           )}
 

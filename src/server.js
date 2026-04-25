@@ -1,7 +1,7 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const authRouter = require('./routes/auth.cjs');
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import authRouter from './routes/auth.js';
 
 const app = express();
 const PORT = 3000;

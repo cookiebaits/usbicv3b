@@ -18,6 +18,7 @@ import {
   RefreshCw,
   Users,
   Award,
+  Rocket,
 } from 'lucide-react';
 
 const stats = [

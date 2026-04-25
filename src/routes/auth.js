@@ -1,7 +1,8 @@
-// src/routes/auth.cjs
-const express = require('express');
+// src/routes/auth.js
+import express from 'express';
+import * as config from '../../config/config.js';
+
 const router = express.Router();
-const config = require('../../config/config.cjs');
 
 // In-memory storage for the session
 let adminCredentials = {
@@ -40,6 +41,19 @@ let users = [
   }
 ];
 
+// Authentication middleware
+const authenticateAdmin = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1];
+    // In this mock, we accept any token that starts with mock-admin-token
+    if (token.startsWith('mock-admin-token')) {
+      return next();
+    }
+  }
+  res.status(401).json({ message: 'Unauthorized' });
+};
+
 // Admin Login
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
@@ -54,7 +68,7 @@ router.post('/login', (req, res) => {
 });
 
 // Admin Settings (includes security)
-router.get('/settings', (req, res) => {
+router.get('/settings', authenticateAdmin, (req, res) => {
   res.json({
     siteName: 'SecureBank',
     supportEmail: 'support@securebank.io',
@@ -64,7 +78,7 @@ router.get('/settings', (req, res) => {
   });
 });
 
-router.put('/settings', (req, res) => {
+router.put('/settings', authenticateAdmin, (req, res) => {
   const { adminUsername, adminPassword, ...otherSettings } = req.body;
 
   if (adminUsername) {
@@ -79,11 +93,11 @@ router.put('/settings', (req, res) => {
 });
 
 // User Management
-router.get('/users', (req, res) => {
+router.get('/users', authenticateAdmin, (req, res) => {
   res.json({ users });
 });
 
-router.post('/users', (req, res) => {
+router.post('/users', authenticateAdmin, (req, res) => {
   const { fullName, username, email, password } = req.body;
 
   if (!fullName || !username || !email || !password) {
@@ -110,7 +124,7 @@ router.post('/users', (req, res) => {
 });
 
 // Mocking other user actions for AdminUsersPage.tsx to work
-router.put('/users/:id', (req, res) => {
+router.put('/users/:id', authenticateAdmin, (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
   const user = users.find(u => u._id === id);
@@ -121,14 +135,14 @@ router.put('/users/:id', (req, res) => {
   res.status(404).json({ message: 'User not found' });
 });
 
-router.delete('/users/:id', (req, res) => {
+router.delete('/users/:id', authenticateAdmin, (req, res) => {
   const { id } = req.params;
   users = users.filter(u => u._id !== id);
   res.json({ success: true });
 });
 
-router.post('/users/:id/terminate', (req, res) => {
+router.post('/users/:id/terminate', authenticateAdmin, (req, res) => {
   res.json({ success: true });
 });
 
-module.exports = router;
+export default router;

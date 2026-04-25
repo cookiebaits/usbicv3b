@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Search, Filter, Check, X, Loader2, ChevronDown,
+  Search, Filter, Check, X, Loader2,
   Trash2, UserCheck, Users, AlertCircle, MoreVertical,
-  ShieldOff, UserX, WifiOff,
+  ShieldOff, UserX, WifiOff, UserPlus,
 } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { formatCurrency, formatDatetime } from '../../lib/api';
@@ -35,6 +35,8 @@ export default function AdminUsersPage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<User | null>(null);
   const [confirmTerminate, setConfirmTerminate] = useState<User | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newUser, setNewUser] = useState({ fullName: '', username: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -83,7 +85,11 @@ export default function AdminUsersPage() {
   const toggleSelect = (id: string) => {
     setSelected((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
       return next;
     });
   };
@@ -128,6 +134,20 @@ export default function AdminUsersPage() {
     } finally { setActionLoading(null); }
   };
 
+  const handleCreateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setActionLoading('create');
+    try {
+      await adminFetch('/api/admin/users', { method: 'POST', body: JSON.stringify(newUser) });
+      setShowCreateModal(false);
+      setNewUser({ fullName: '', username: '', email: '', password: '' });
+      showMsg('User created successfully');
+      fetchUsers();
+    } catch (err: unknown) {
+      showMsg(err instanceof Error ? err.message : 'Failed to create user.', true);
+    } finally { setActionLoading(null); }
+  };
+
   const bulkApprove = async () => {
     if (selected.size === 0) return;
     setActionLoading('bulk');
@@ -162,6 +182,13 @@ export default function AdminUsersPage() {
             <h1 className="text-2xl font-bold text-slate-900">Users</h1>
             <p className="text-slate-500 text-sm mt-0.5">{users.length} total accounts</p>
           </div>
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="btn-primary flex items-center gap-2"
+          >
+            <UserPlus className="w-4 h-4" />
+            Create New User
+          </button>
         </div>
 
         {error && (
@@ -319,6 +346,74 @@ export default function AdminUsersPage() {
                   Delete
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {showCreateModal && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-modal w-full max-w-md p-8 animate-slide-up">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-bold text-slate-900 text-lg">Create New User</h3>
+                <button onClick={() => setShowCreateModal(false)} className="text-slate-400 hover:text-slate-600">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <form onSubmit={handleCreateUser} className="space-y-4">
+                <div>
+                  <label className="input-label">Full Name</label>
+                  <input
+                    className="input-field"
+                    required
+                    value={newUser.fullName}
+                    onChange={(e) => setNewUser({...newUser, fullName: e.target.value})}
+                    placeholder="John Doe"
+                  />
+                </div>
+                <div>
+                  <label className="input-label">Username</label>
+                  <input
+                    className="input-field"
+                    required
+                    value={newUser.username}
+                    onChange={(e) => setNewUser({...newUser, username: e.target.value})}
+                    placeholder="johndoe"
+                  />
+                </div>
+                <div>
+                  <label className="input-label">Email Address</label>
+                  <input
+                    className="input-field"
+                    type="email"
+                    required
+                    value={newUser.email}
+                    onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                    placeholder="john@example.com"
+                  />
+                </div>
+                <div>
+                  <label className="input-label">Initial Password</label>
+                  <input
+                    className="input-field"
+                    type="password"
+                    required
+                    value={newUser.password}
+                    onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                    placeholder="••••••••"
+                  />
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <button type="button" onClick={() => setShowCreateModal(false)} className="btn-secondary flex-1">Cancel</button>
+                  <button
+                    type="submit"
+                    disabled={actionLoading === 'create'}
+                    className="flex-1 flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors disabled:opacity-50"
+                  >
+                    {actionLoading === 'create' ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+                    Create User
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}

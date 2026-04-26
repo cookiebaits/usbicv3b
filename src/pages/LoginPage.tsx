@@ -36,6 +36,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.message || 'Login failed');
       if (data.requires2FA) {
         setStep('2fa');
+        if (data.message) setError(''); // Clear error if we have a success message
       } else {
         setToken(data.token);
         navigate('/dashboard');
@@ -211,7 +212,7 @@ export default function LoginPage() {
                   <Shield className="w-7 h-7 text-primary-600" />
                 </div>
                 <h1 className="text-2xl font-bold text-slate-900 mb-1">Two-factor verification</h1>
-                <p className="text-slate-500 text-sm">Enter the 6-digit code sent to your registered contact.</p>
+                <p className="text-slate-500 text-sm">Enter the 6-digit code sent to your registered email address.</p>
               </div>
 
               {error && (

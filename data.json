@@ -145,6 +145,31 @@
           "usdValue": 0
         }
       }
+    },
+    {
+      "_id": "1777182136451",
+      "fullName": "Test User",
+      "username": "testuser",
+      "email": "test@example.com",
+      "password": "password",
+      "status": "active",
+      "twoFAEnabled": false,
+      "lastLogin": null,
+      "createdAt": "2026-04-26T05:42:16.451Z",
+      "accounts": {
+        "checking": {
+          "balance": 0,
+          "accountNumber": "25212786"
+        },
+        "savings": {
+          "balance": 0,
+          "accountNumber": "56320546"
+        },
+        "bitcoin": {
+          "btcBalance": 0,
+          "usdValue": 0
+        }
+      }
     }
   ],
   "transactions": [
@@ -1331,5 +1356,7 @@
       "isFiller": true
     }
   ],
-  "terminatedSessions": []
+  "terminatedSessions": [
+    "1777182136451"
+  ]
 }

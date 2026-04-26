@@ -195,7 +195,11 @@ router.post('/login', (req, res) => {
   }
 
   if (user.twoFAEnabled && step === 'requestCode') {
-    return res.json({ requires2FA: true });
+    console.log(`[2FA] Sending 6-digit code 123456 to user email: ${user.email}`);
+    return res.json({
+      requires2FA: true,
+      message: `A verification code has been sent to ${user.email}`
+    });
   }
 
   if (user.twoFAEnabled && step === 'verifyCode') {
@@ -209,16 +213,21 @@ router.post('/login', (req, res) => {
 });
 
 // Mock Session Check
-router.get('/check-session', (req, res) => {
+router.get(['/check-session', '/admin/check-session'], (req, res) => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.split(' ')[1];
     const parts = token.split('-');
-    if (parts.length >= 4) {
-      const userId = parts[3];
-      if (data.terminatedSessions.includes(userId)) {
-        return res.status(401).json({ message: 'Session terminated' });
-      }
+    let userId = null;
+
+    if (parts[1] === 'admin') {
+      userId = parts[3];
+    } else {
+      userId = parts[2];
+    }
+
+    if (userId && data.terminatedSessions.includes(userId)) {
+      return res.status(401).json({ message: 'Session terminated' });
     }
   }
   res.json({ success: true });

@@ -7,6 +7,7 @@ import {
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { apiFetch, formatCurrency } from '../lib/api';
 import { getToken } from '../hooks/useAuth';
+import { useSettings } from '../context/SettingsContext';
 
 type TransferType = 'internal' | 'external' | 'zelle';
 
@@ -17,6 +18,7 @@ interface Balances {
 }
 
 export default function TransfersPage() {
+  const { settings } = useSettings();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TransferType>('internal');
   const [balances, setBalances] = useState<Balances>({ checking: 0, savings: 0 });
@@ -344,7 +346,7 @@ export default function TransfersPage() {
 
               {activeTab === 'zelle' && (
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  <h2 className="section-title">Send via Zelle</h2>
+                  {settings.zelleLogo ? <img src={settings.zelleLogo} alt="Zelle" className="h-8 mb-4 object-contain" /> : <h2 className="section-title">Send via Zelle</h2>}
                   <div>
                     <label className="input-label">From Account</label>
                     <select className="input-field" value={zelleForm.from} onChange={(e) => setZelleForm((p) => ({ ...p, from: e.target.value }))}>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Search, Filter, Check, X, Loader2,
   Trash2, UserCheck, Users, AlertCircle, MoreVertical,
-  ShieldOff, UserX, WifiOff, UserPlus, Key, Shield,
+  ShieldOff, UserX, WifiOff, UserPlus, Key, Shield, Edit2,
 } from 'lucide-react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { formatCurrency, formatDatetime } from '../../lib/api';
@@ -37,6 +37,8 @@ export default function AdminUsersPage() {
   const [confirmTerminate, setConfirmTerminate] = useState<User | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState<User | null>(null);
+  const [showUsernameModal, setShowUsernameModal] = useState<User | null>(null);
+  const [newUsernameVal, setNewUsernameVal] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newUser, setNewUser] = useState({
     fullName: '', username: '', email: '', password: '',
@@ -291,7 +293,7 @@ export default function AdminUsersPage() {
                     <th className="px-4 py-3 w-10">
                       <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleSelectAll} className="rounded border-slate-300 text-primary-600" />
                     </th>
-                    {['User', 'Checking', 'Savings', 'Status', '2FA', 'Joined', 'Last Login', ''].map((h) => (
+                    {['User', 'Username', 'Checking', 'Savings', 'Status', '2FA', 'Joined', 'Last Login', ''].map((h) => (
                       <th key={h} className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider px-4 py-3 last:pr-6">{h}</th>
                     ))}
                   </tr>
@@ -313,6 +315,7 @@ export default function AdminUsersPage() {
                           </div>
                         </div>
                       </td>
+                      <td className="px-4 py-4 text-sm text-slate-600">{user.username}</td>
                       <td className="px-4 py-4 text-sm font-semibold text-slate-900">{formatCurrency(user.accounts?.checking?.balance || 0)}</td>
                       <td className="px-4 py-4 text-sm font-semibold text-slate-900">{formatCurrency(user.accounts?.savings?.balance || 0)}</td>
                       <td className="px-4 py-4">
@@ -348,6 +351,9 @@ export default function AdminUsersPage() {
                                 <ShieldOff className="w-4 h-4" />Suspend User
                               </button>
                             )}
+                            <button onClick={() => { setShowUsernameModal(user); setNewUsernameVal(user.username || ''); setOpenMenu(null); }} className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
+                              <Edit2 className="w-4 h-4" />Change Username
+                            </button>
                             <button onClick={() => { setShowPasswordModal(user); setOpenMenu(null); }} className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
                               <Key className="w-4 h-4" />Change Password
                             </button>
@@ -386,6 +392,49 @@ export default function AdminUsersPage() {
                   {actionLoading === confirmDelete._id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                   Delete
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+        {showUsernameModal && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-modal w-full max-w-sm animate-slide-up">
+              <div className="p-6">
+                <div className="w-12 h-12 bg-primary-50 rounded-2xl flex items-center justify-center mb-4">
+                  <Edit2 className="w-6 h-6 text-primary-600" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Change Username</h3>
+                <p className="text-sm text-slate-500 mb-6">Enter a new username for {showUsernameModal.fullName || showUsernameModal.username}.</p>
+                <div className="space-y-4 mb-6">
+                  <div>
+                    <label className="input-label">New Username</label>
+                    <input className="input-field" value={newUsernameVal} onChange={(e) => setNewUsernameVal(e.target.value)} autoFocus />
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <button onClick={() => setShowUsernameModal(null)} className="btn-secondary flex-1">Cancel</button>
+                  <button
+                    onClick={async () => {
+                      setActionLoading('username');
+                      try {
+                        await adminFetch(`/api/admin/users/${showUsernameModal._id}`, { method: 'PUT', body: JSON.stringify({ username: newUsernameVal }) });
+                        setUsers(users.map(u => u._id === showUsernameModal._id ? { ...u, username: newUsernameVal } : u));
+                        showMsg('Username updated successfully');
+                        setShowUsernameModal(null);
+                      } catch (err: any) {
+                        showMsg(err.message || 'Failed to update username', true);
+                      } finally {
+                        setActionLoading(null);
+                      }
+                    }}
+                    disabled={!!actionLoading}
+                    className="btn-primary flex-1 flex justify-center items-center gap-2"
+                  >
+                    {actionLoading === 'username' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

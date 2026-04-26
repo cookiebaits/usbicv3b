@@ -5,6 +5,7 @@ import {
   ShoppingCart, DollarSign, Loader2, AlertCircle, CheckCircle,
 } from 'lucide-react';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import { useSettings } from '../context/SettingsContext';
 import { apiFetch, formatCurrency } from '../lib/api';
 import { getToken } from '../hooks/useAuth';
 

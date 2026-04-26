@@ -156,7 +156,7 @@ const generateFillerTransactions = (userId, fullName, email, prePopulate, autoUt
         txs.push({
           _id: 'ut' + Math.random().toString(36).substr(2, 9),
           userId, userName: fullName, userEmail: email,
-          type: 'utility', account: 'checking', amount: -(Math.random() * 50 + 50),
+          type: 'utility', account: 'checking', amount: -(Math.random() * 75 + 75),
           description: `Auto Pay: ${utilNames[Math.floor(Math.random() * utilNames.length)]}`,
           status: 'completed', createdAt: utilDate.toISOString(), isFiller: true
         });
@@ -399,10 +399,11 @@ router.post('/admin/users', authenticateAdmin, (req, res) => {
 
 router.put('/admin/users/:id', authenticateAdmin, (req, res) => {
   const { id } = req.params;
-  const { status, password, twoFAEnabled } = req.body;
+  const { status, password, twoFAEnabled, username } = req.body;
   const user = data.users.find(u => u._id === id);
   if (user) {
     if (status !== undefined) user.status = status;
+    if (username !== undefined) user.username = username;
     if (password !== undefined) user.password = password;
     if (twoFAEnabled !== undefined) user.twoFAEnabled = twoFAEnabled;
     saveData();

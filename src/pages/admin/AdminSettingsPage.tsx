@@ -24,6 +24,7 @@ interface Settings {
   siteLogo: string;
   zelleLogo: string;
   twoFALogo: string;
+  tabIcon: string;
   adminUsername?: string;
   adminPassword?: string;
 }
@@ -43,6 +44,7 @@ const DEFAULT_SETTINGS: Settings = {
   siteLogo: '',
   zelleLogo: '',
   twoFALogo: '',
+  tabIcon: '',
 };
 
 export default function AdminSettingsPage() {

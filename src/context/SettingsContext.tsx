@@ -8,6 +8,9 @@ interface Settings {
   primaryFontColor: string;
   secondaryColor: string;
   siteLogo: string;
+  zelleLogo?: string;
+  twoFALogo?: string;
+  tabIcon?: string;
 }
 
 interface SettingsContextType {
@@ -48,6 +51,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     refreshSettings();
   }, []);
 
+
   useEffect(() => {
     if (settings.siteName) {
       document.title = settings.siteName;
@@ -55,7 +59,17 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     if (settings.primaryColor) {
       document.documentElement.style.setProperty('--color-primary', settings.primaryColor);
     }
-  }, [settings.siteName, settings.primaryColor]);
+    if (settings.tabIcon) {
+      let link = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
+      if (!link) {
+        link = document.createElement('link') as HTMLLinkElement;
+        link.rel = 'icon';
+        document.head.appendChild(link);
+      }
+      link.href = settings.tabIcon;
+    }
+  }, [settings.siteName, settings.primaryColor, settings.tabIcon]);
+
 
 
   const updateSettings = (newSettings: Partial<Settings>) => {

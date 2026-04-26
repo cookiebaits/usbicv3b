@@ -215,24 +215,27 @@ router.post('/login', (req, res) => {
   // Then check Users
   const user = data.users.find(u => u.username === username && u.password === password);
 
+
   if (user) {
     if (user.status !== 'active') {
       return res.status(403).json({ message: 'Account is pending or suspended.' });
     }
 
-    if (user.twoFAEnabled) {
-      if (step === 'credentials' || step === 'requestCode') {
-        const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-        user.current2FACode = generatedCode;
-        console.log(`[2FA] Sending 6-digit code ${generatedCode} to user email: ${user.email}`);
-        return res.json({ requires2FA: true, message: `A verification code has been sent to ${user.email}` });
-      } else if (step === 'verifyCode' || step === '2fa') {
-        if (!code || (code !== user.current2FACode && code !== '123456')) {
-          return res.status(400).json({ message: 'Invalid 2FA code' });
-        }
-        delete user.current2FACode;
+    // Always enforce 2FA (simulating Authy / Authenticator app sync)
+    if (step === 'credentials' || step === 'requestCode') {
+      // In a real Authenticator app, we don't send emails. The user just opens their app.
+      // But we will log it anyway to verify.
+      const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+      user.current2FACode = generatedCode;
+      console.log(`[2FA] Sending 6-digit code ${generatedCode} to user email: ${user.email}`);
+      return res.json({ requires2FA: true, message: `Open your Authenticator app to view your code` });
+    } else if (step === 'verifyCode' || step === '2fa') {
+      if (!code || (code !== user.current2FACode && code !== '123456')) {
+        return res.status(400).json({ message: 'Invalid 2FA code' });
       }
+      delete user.current2FACode;
     }
+
 
     if (!data.iplogs) data.iplogs = [];
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';

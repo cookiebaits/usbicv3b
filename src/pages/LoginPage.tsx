@@ -212,7 +212,8 @@ export default function LoginPage() {
                   <Shield className="w-7 h-7 text-primary-600" />
                 </div>
                 <h1 className="text-2xl font-bold text-slate-900 mb-1">Two-factor verification</h1>
-                <p className="text-slate-500 text-sm">Enter the 6-digit code sent to your registered email address.</p>
+                <p className="text-primary-600 text-xs font-semibold mb-2">Sync with Authenticator App (e.g. Authy)</p>
+                <p className="text-slate-500 text-sm">Enter the 6-digit code sent to your device.</p>
               </div>
 
               {error && (

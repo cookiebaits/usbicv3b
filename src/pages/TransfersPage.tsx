@@ -26,7 +26,7 @@ export default function TransfersPage() {
   const [pageLoading, setPageLoading] = useState(true);
   const [error, setError] = useState('');
   const [step, setStep] = useState<'form' | 'captcha' | '2fa' | 'verify' | 'success'>('form');
-  const [captcha, setCaptcha] = useState({ question: '2 + 5 * 4', answer: 22 });
+  const captcha = { question: '2 + 5 * 4', answer: 22 };
   const [captchaInput, setCaptchaInput] = useState('');
   const [verifyCode, setVerifyCode] = useState('');
   const [successData, setSuccessData] = useState<Record<string, string>>({});

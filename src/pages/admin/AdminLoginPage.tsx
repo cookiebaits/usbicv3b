@@ -172,7 +172,7 @@ export default function AdminLoginPage() {
                 <ArrowLeft className="w-4 h-4" />
                 Back
               </button>
-              <p className="text-slate-400 text-sm mb-6 text-center">Enter the 6-digit verification code.</p>
+              <p className="text-slate-400 text-sm mb-6 text-center">Enter the 6-digit code sent to your device.</p>
               <form onSubmit={handle2FA}>
                 <div className="flex gap-2 justify-center mb-6">
                   {twoFACode.map((digit, i) => (

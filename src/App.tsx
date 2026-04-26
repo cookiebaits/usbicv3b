@@ -5,7 +5,6 @@ import RegisterPage from './pages/RegisterPage';
 import RegistrationSuccessPage from './pages/RegistrationSuccessPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import DashboardPage from './pages/DashboardPage';
-import AccountsPage from './pages/AccountsPage';
 import TransactionsPage from './pages/TransactionsPage';
 import TransfersPage from './pages/TransfersPage';
 import CryptoPage from './pages/CryptoPage';
@@ -30,7 +29,6 @@ export default function App() {
         <Route path="/registration-success" element={<RegistrationSuccessPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/dashboard/accounts" element={<AccountsPage />} />
         <Route path="/dashboard/transactions" element={<TransactionsPage />} />
         <Route path="/dashboard/transfers" element={<TransfersPage />} />
         <Route path="/dashboard/crypto" element={<CryptoPage />} />

@@ -1,7 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
-  CreditCard,
   ArrowLeftRight,
   Receipt,
   Bitcoin,
@@ -15,7 +14,6 @@ import { useSettings } from '../../context/SettingsContext';
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-  { label: 'Accounts', icon: CreditCard, href: '/dashboard/accounts' },
   { label: 'Transfers', icon: ArrowLeftRight, href: '/dashboard/transfers' },
   { label: 'Transactions', icon: Receipt, href: '/dashboard/transactions' },
   { label: 'Crypto', icon: Bitcoin, href: '/dashboard/crypto' },

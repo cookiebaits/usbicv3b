@@ -35,10 +35,10 @@ let data = {
   users: [
     {
       _id: '1',
-      fullName: 'John Doe',
-      username: 'johndoe',
+      fullName: 'Doctor Po',
+      username: 'doctorpo',
       password: 'password123',
-      email: 'john@example.com',
+      email: 'doctorpo@example.com',
       status: 'active',
       twoFAEnabled: true,
       lastLogin: new Date().toISOString(),
@@ -51,17 +51,33 @@ let data = {
     },
     {
       _id: '2',
-      fullName: 'Jane Smith',
-      username: 'janesmith',
+      fullName: 'Doctor Wholes',
+      username: 'doctorwholes',
       password: 'password123',
-      email: 'jane@example.com',
-      status: 'pending',
+      email: 'doctorwholes@example.com',
+      status: 'active',
       twoFAEnabled: false,
       lastLogin: null,
       createdAt: new Date().toISOString(),
       accounts: {
         checking: { balance: 0, accountNumber: '11223344' },
         savings: { balance: 0, accountNumber: '44332211' },
+        bitcoin: { btcBalance: 0, usdValue: 0 }
+      }
+    },
+    {
+      _id: '3',
+      fullName: 'Doctor Wang',
+      username: 'doctorwang',
+      password: 'password123',
+      email: 'doctorwang@example.com',
+      status: 'active',
+      twoFAEnabled: false,
+      lastLogin: null,
+      createdAt: new Date().toISOString(),
+      accounts: {
+        checking: { balance: 0, accountNumber: '99887766' },
+        savings: { balance: 0, accountNumber: '66778899' },
         bitcoin: { btcBalance: 0, usdValue: 0 }
       }
     }
@@ -80,7 +96,8 @@ let data = {
       status: 'completed'
     }
   ],
-  terminatedSessions: []
+  terminatedSessions: [],
+  iplogs: []
 };
 
 // Load data from file if exists
@@ -120,56 +137,93 @@ const generateFillerTransactions = (userId, fullName, email, prePopulate, autoUt
 
   if (prePopulate) {
     const retailers = ['Best Buy', 'Amazon', 'Walmart', 'Target', 'Starbucks', 'Apple Store', 'Home Depot', 'Netflix', 'Spotify'];
-    for (let i = 0; i < 15; i++) {
-      const date = new Date();
-      date.setDate(now.getDate() - Math.floor(Math.random() * 180));
-      txs.push({
-        _id: 'ft' + Math.random().toString(36).substr(2, 9),
-        userId,
-        userName: fullName,
-        userEmail: email,
-        type: 'purchase',
-        account: 'checking',
-        amount: -(Math.random() * 200 + 10),
-        description: retailers[Math.floor(Math.random() * retailers.length)],
-        status: 'completed',
-        createdAt: date.toISOString(),
-        isFiller: true
-      });
+    for (let m = 0; m < 6; m++) {
+      const monthDate = new Date();
+      monthDate.setMonth(now.getMonth() - m);
+
+      // 5-10 random transactions per month
+      const numTxs = Math.floor(Math.random() * 6) + 5;
+      for (let i = 0; i < numTxs; i++) {
+        const date = new Date(monthDate);
+        date.setDate(Math.floor(Math.random() * 28) + 1);
+        txs.push({
+          _id: 'ft' + Math.random().toString(36).substr(2, 9),
+          userId,
+          userName: fullName,
+          userEmail: email,
+          type: 'purchase',
+          account: 'checking',
+          amount: -(Math.random() * 200 + 10),
+          description: retailers[Math.floor(Math.random() * retailers.length)],
+          status: 'completed',
+          createdAt: date.toISOString(),
+          isFiller: true
+        });
+      }
     }
   }
 
   if (autoUtilities) {
-    const utilities = [
-      { name: 'Cable & Internet', amount: 89.99 },
-      { name: 'Mobile', amount: 65.00 },
-      { name: 'Electric', amount: 120.00 },
-      { name: 'Water', amount: 45.00 },
-      { name: 'Gas', amount: 35.00 }
-    ];
-
+    const retailers = ['Best Buy', 'Walmart', 'Restaurants', 'Target', 'Starbucks'];
     for (let m = 0; m < 6; m++) {
-      const monthDate = new Date();
-      monthDate.setMonth(now.getMonth() - m);
-      monthDate.setDate(5);
-
-      utilities.forEach(util => {
+      // 1st week: 3rd of each month -> Auto Pay utilities
+      const utilityDate = new Date();
+      utilityDate.setMonth(now.getMonth() - m);
+      utilityDate.setDate(3);
+      if (utilityDate <= now) {
         txs.push({
           _id: 'ut' + Math.random().toString(36).substr(2, 9),
-          userId,
-          userName: fullName,
-          userEmail: email,
-          type: 'utility',
-          account: 'checking',
-          amount: -util.amount,
-          description: `${util.name} - Auto Pay`,
-          status: 'completed',
-          createdAt: monthDate.toISOString(),
-          isFiller: true
+          userId, userName: fullName, userEmail: email,
+          type: 'utility', account: 'checking', amount: -(Math.random() * 50 + 50),
+          description: 'Auto Pay: (utilities, ex gas, electric, internet)',
+          status: 'completed', createdAt: utilityDate.toISOString(), isFiller: true
         });
-      });
+      }
+
+      // 2nd week: ~10th
+      const week2Date = new Date();
+      week2Date.setMonth(now.getMonth() - m);
+      week2Date.setDate(10);
+      if (week2Date <= now) {
+        txs.push({
+          _id: 'ut' + Math.random().toString(36).substr(2, 9),
+          userId, userName: fullName, userEmail: email,
+          type: 'purchase', account: 'checking', amount: -(Math.random() * 100 + 20),
+          description: retailers[Math.floor(Math.random() * retailers.length)],
+          status: 'completed', createdAt: week2Date.toISOString(), isFiller: true
+        });
+      }
+
+      // 3rd week: ~17th
+      const week3Date = new Date();
+      week3Date.setMonth(now.getMonth() - m);
+      week3Date.setDate(17);
+      if (week3Date <= now) {
+        txs.push({
+          _id: 'ut' + Math.random().toString(36).substr(2, 9),
+          userId, userName: fullName, userEmail: email,
+          type: 'payment', account: 'checking', amount: -(Math.random() * 200 + 50),
+          description: 'Auto Pay: Credit cards xxxx-3018 and xxxx-1337',
+          status: 'completed', createdAt: week3Date.toISOString(), isFiller: true
+        });
+      }
+
+      // 4th week: ~24th
+      const week4Date = new Date();
+      week4Date.setMonth(now.getMonth() - m);
+      week4Date.setDate(24);
+      if (week4Date <= now) {
+        txs.push({
+          _id: 'ut' + Math.random().toString(36).substr(2, 9),
+          userId, userName: fullName, userEmail: email,
+          type: 'purchase', account: 'checking', amount: -(Math.random() * 100 + 20),
+          description: retailers[Math.floor(Math.random() * retailers.length)],
+          status: 'completed', createdAt: week4Date.toISOString(), isFiller: true
+        });
+      }
     }
   }
+
   return txs;
 };
 
@@ -244,7 +298,8 @@ router.get('/admin/dashboard', authenticateAdmin, (req, res) => {
 
 // Transactions
 router.get('/admin/transactions', authenticateAdmin, (req, res) => {
-  res.json({ transactions: data.transactions });
+  const sorted = [...data.transactions].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  res.json({ transactions: sorted });
 });
 
 router.post('/admin/transactions', authenticateAdmin, (req, res) => {
@@ -373,21 +428,8 @@ router.post('/admin/users/:id/terminate', authenticateAdmin, (req, res) => {
 
 // IP Logs
 router.get('/admin/iplogs', authenticateAdmin, (req, res) => {
-  const logs = [
-    {
-      _id: 'l1',
-      ip: '127.0.0.1',
-      userId: '1',
-      userName: 'John Doe',
-      userEmail: 'john@example.com',
-      type: 'login',
-      createdAt: new Date().toISOString()
-    }
-  ];
-
-  // Return active sessions too (those not in terminatedSessions)
+  const logs = data.iplogs || [];
   const activeSessions = logs.filter(l => l.type === 'login' && !data.terminatedSessions.includes(l.userId));
-
   res.json({ logs, activeSessions });
 });
 
@@ -396,13 +438,37 @@ const authenticateUser = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.split(' ')[1];
-    // In this mock, the token contains the userId: 'mock-token-USERID-TIMESTAMP'
     const parts = token.split('-');
     if (parts.length >= 3) {
       const userId = parts[2];
       const user = data.users.find(u => u._id === userId);
       if (user) {
         req.user = user;
+
+        // Log IP
+        if (!data.iplogs) data.iplogs = [];
+        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
+        const userAgent = req.headers['user-agent'] || 'Unknown Browser';
+
+        // simple dedup for this request type so we don't log thousands of times
+        const lastLog = data.iplogs.filter(l => l.userId === userId).pop();
+        if (!lastLog || new Date() - new Date(lastLog.createdAt) > 60000) {
+          data.iplogs.push({
+            _id: 'l' + Date.now() + Math.random().toString(36).substr(2, 5),
+            ip: ip,
+            userId: user._id,
+            userName: user.fullName,
+            userEmail: user.email,
+            type: 'login',
+            userAgent: userAgent,
+            city: 'New York', // Mock geolocation
+            region: 'NY',
+            country: 'US',
+            createdAt: new Date().toISOString()
+          });
+          saveData();
+        }
+
         return next();
       }
     }
@@ -433,7 +499,7 @@ router.get('/user', authenticateUser, async (req, res) => {
 });
 
 router.get('/transactions', authenticateUser, (req, res) => {
-  const userTxs = data.transactions.filter(t => t.userId === req.user._id);
+  const userTxs = data.transactions.filter(t => t.userId === req.user._id).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   res.json({ transactions: userTxs });
 });
 

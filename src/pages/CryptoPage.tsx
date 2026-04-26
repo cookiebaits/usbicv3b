@@ -161,7 +161,7 @@ export default function CryptoPage() {
               <span className="text-white/80 text-xs font-medium">BTC Balance</span>
             </div>
             <p className="text-2xl font-bold text-white">{(data?.btcBalance || 0).toFixed(6)}</p>
-            <p className="text-white/70 text-sm mt-1">{formatCurrency(data?.usdValue || data?.usdBalance || 0)}</p>
+            <p className="text-white/70 text-sm mt-1">{formatCurrency(data?.usdBalance || 0)}</p>
           </div>
           <div className="card p-5">
             <div className="flex items-center gap-2 mb-3">

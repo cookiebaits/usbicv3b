@@ -5,8 +5,8 @@ services:
     expose:
       - "3000"               # internal, used only by nginx
     environment:
-      - ADMIN_USER=icuadmin
-      - ADMIN_PASS=Temporaryp4ss
+      - ADMIN_USER=${ADMIN_USER}
+      - ADMIN_PASS=${ADMIN_PASS}
     # optional: volumes, etc.
 
   nginx:

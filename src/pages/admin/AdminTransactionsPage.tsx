@@ -173,7 +173,7 @@ export default function AdminTransactionsPage() {
           </div>
         </div>
 
-        <div className="card overflow-hidden">
+        <div className="card">
           {loading ? (
             <div className="flex items-center justify-center py-16">
               <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
@@ -184,7 +184,7 @@ export default function AdminTransactionsPage() {
               <p className="text-slate-500 font-medium">No transactions found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto overflow-visible">
               <table className="w-full">
                 <thead className="bg-slate-50 border-b border-slate-100">
                   <tr>
@@ -200,14 +200,14 @@ export default function AdminTransactionsPage() {
                     const status = tx.status || 'completed';
                     return (
                       <tr key={tx._id} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${isPositive ? 'bg-emerald-50' : 'bg-red-50'}`}>
-                              <Icon className={`w-4 h-4 ${isPositive ? 'text-emerald-600' : 'text-red-500'}`} />
+                        <td className="px-6 py-5">
+                          <div className="flex items-center gap-4">
+                            <div className={`w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 ${isPositive ? 'bg-emerald-50' : 'bg-red-50'}`}>
+                              <Icon className={`w-5 h-5 ${isPositive ? 'text-emerald-600' : 'text-red-500'}`} />
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-slate-900">{tx.description || tx.type}</p>
-                              {tx.btcAmount && <p className="text-xs text-slate-400">{Math.abs(tx.btcAmount).toFixed(6)} BTC</p>}
+                              <p className="text-base font-semibold text-slate-900">{tx.description || tx.type}</p>
+                              {tx.btcAmount && <p className="text-sm text-slate-500 font-medium">{Math.abs(tx.btcAmount).toFixed(6)} BTC</p>}
                             </div>
                           </div>
                         </td>
@@ -235,12 +235,12 @@ export default function AdminTransactionsPage() {
                             'bg-red-50 text-red-700'
                           }`}>{status}</span>
                         </td>
-                        <td className="px-6 py-4 relative">
+                        <td className="px-6 py-4 relative overflow-visible">
                           <button onClick={(e) => { e.stopPropagation(); setOpenMenu(openMenu === tx._id ? null : tx._id); }} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors">
                             <MoreVertical className="w-4 h-4" />
                           </button>
                           {openMenu === tx._id && (
-                            <div className="absolute right-4 top-10 w-40 bg-white rounded-xl border border-slate-100 shadow-modal z-20 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                            <div className="absolute right-4 top-12 w-48 bg-white rounded-xl border border-slate-100 shadow-modal z-50 overflow-visible" onClick={(e) => e.stopPropagation()}>
                               <button onClick={() => { setDetailTx(tx); setOpenMenu(null); }} className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
                                 <Eye className="w-4 h-4" />Details
                               </button>

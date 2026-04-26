@@ -28,7 +28,7 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/admin/login', {
+      const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/admin/login', {
+      const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

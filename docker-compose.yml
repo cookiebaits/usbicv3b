@@ -7,4 +7,6 @@ services:
       - "80:80"
     environment:
       - NODE_ENV=production
+    volumes:
+      - ./data.json:/app/data.json
     restart: always

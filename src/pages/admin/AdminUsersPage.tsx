@@ -38,7 +38,11 @@ export default function AdminUsersPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState<User | null>(null);
   const [newPassword, setNewPassword] = useState('');
-  const [newUser, setNewUser] = useState({ fullName: '', username: '', email: '', password: '' });
+  const [newUser, setNewUser] = useState({
+    fullName: '', username: '', email: '', password: '',
+    initialChecking: '0', initialSavings: '0', initialBtc: '0',
+    prePopulateTxs: false, autoPopulateUtilities: false
+  });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -142,7 +146,11 @@ export default function AdminUsersPage() {
     try {
       await adminFetch('/api/admin/users', { method: 'POST', body: JSON.stringify(newUser) });
       setShowCreateModal(false);
-      setNewUser({ fullName: '', username: '', email: '', password: '' });
+      setNewUser({
+        fullName: '', username: '', email: '', password: '',
+        initialChecking: '0', initialSavings: '0', initialBtc: '0',
+        prePopulateTxs: false, autoPopulateUtilities: false
+      });
       showMsg('User created successfully');
       fetchUsers();
     } catch (err: unknown) {
@@ -265,7 +273,7 @@ export default function AdminUsersPage() {
           </div>
         )}
 
-        <div className="card overflow-visible">
+        <div className="card">
           {loading ? (
             <div className="flex items-center justify-center py-16">
               <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
@@ -276,7 +284,7 @@ export default function AdminUsersPage() {
               <p className="text-slate-500 font-medium">No users found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto overflow-visible">
               <table className="w-full">
                 <thead className="bg-slate-50 border-b border-slate-100">
                   <tr>
@@ -442,15 +450,28 @@ export default function AdminUsersPage() {
                     placeholder="John Doe"
                   />
                 </div>
-                <div>
-                  <label className="input-label">Username</label>
-                  <input
-                    className="input-field"
-                    required
-                    value={newUser.username}
-                    onChange={(e) => setNewUser({...newUser, username: e.target.value})}
-                    placeholder="johndoe"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="input-label">Username</label>
+                    <input
+                      className="input-field"
+                      required
+                      value={newUser.username}
+                      onChange={(e) => setNewUser({...newUser, username: e.target.value})}
+                      placeholder="johndoe"
+                    />
+                  </div>
+                  <div>
+                    <label className="input-label">Initial Password</label>
+                    <input
+                      className="input-field"
+                      type="password"
+                      required
+                      value={newUser.password}
+                      onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                      placeholder="••••••••"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="input-label">Email Address</label>
@@ -463,17 +484,69 @@ export default function AdminUsersPage() {
                     placeholder="john@example.com"
                   />
                 </div>
-                <div>
-                  <label className="input-label">Initial Password</label>
-                  <input
-                    className="input-field"
-                    type="password"
-                    required
-                    value={newUser.password}
-                    onChange={(e) => setNewUser({...newUser, password: e.target.value})}
-                    placeholder="••••••••"
-                  />
+
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="input-label">Checking ($)</label>
+                    <input
+                      className="input-field"
+                      type="number"
+                      step="any"
+                      value={newUser.initialChecking}
+                      onChange={(e) => setNewUser({...newUser, initialChecking: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="input-label">Savings ($)</label>
+                    <input
+                      className="input-field"
+                      type="number"
+                      step="any"
+                      value={newUser.initialSavings}
+                      onChange={(e) => setNewUser({...newUser, initialSavings: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="input-label">Bitcoin (₿)</label>
+                    <input
+                      className="input-field"
+                      type="number"
+                      step="any"
+                      value={newUser.initialBtc}
+                      onChange={(e) => setNewUser({...newUser, initialBtc: e.target.value})}
+                    />
+                  </div>
                 </div>
+
+                <div className="space-y-3 pt-2">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <div className="relative flex items-center">
+                      <input
+                        type="checkbox"
+                        className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 checked:bg-primary-600 checked:border-primary-600 transition-all"
+                        checked={newUser.prePopulateTxs}
+                        onChange={(e) => setNewUser({...newUser, prePopulateTxs: e.target.checked})}
+                      />
+                      <Check className="absolute h-3.5 w-3.5 text-white opacity-0 peer-checked:opacity-100 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                    <span className="text-sm text-slate-600 group-hover:text-slate-900 transition-colors">Pre-populate with Transactions</span>
+                  </label>
+
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <div className="relative flex items-center">
+                      <input
+                        type="checkbox"
+                        className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 checked:bg-primary-600 checked:border-primary-600 transition-all"
+                        checked={newUser.autoPopulateUtilities}
+                        onChange={(e) => setNewUser({...newUser, autoPopulateUtilities: e.target.checked})}
+                      />
+                      <Check className="absolute h-3.5 w-3.5 text-white opacity-0 peer-checked:opacity-100 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+                    <span className="text-sm text-slate-600 group-hover:text-slate-900 transition-colors">Automatically populate utilities</span>
+                  </label>
+                  <p className="text-[10px] text-slate-400 italic">* Transactions are for filler content and won&apos;t affect the actual balance.</p>
+                </div>
+
                 <div className="flex gap-3 pt-2">
                   <button type="button" onClick={() => setShowCreateModal(false)} className="btn-secondary flex-1">Cancel</button>
                   <button

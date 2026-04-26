@@ -36,49 +36,49 @@ let data = {
     {
       _id: '1',
       fullName: 'Doctor Po',
-      username: 'doctorpo',
-      password: 'password123',
-      email: 'doctorpo@example.com',
+      username: 'elephantorules',
+      password: 'Elephanto^Pterodaytl{Rulez}',
+      email: 'doctorpomd@gmail.com',
       status: 'active',
       twoFAEnabled: true,
       lastLogin: new Date().toISOString(),
       createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
       accounts: {
-        checking: { balance: 1250.50, accountNumber: '12345678' },
-        savings: { balance: 5000.00, accountNumber: '87654321' },
-        bitcoin: { btcBalance: 0.05, usdValue: 3000.00 }
+        checking: { balance: 1337.69, accountNumber: '12345678' },
+        savings: { balance: 80081.35, accountNumber: '87654321' },
+        bitcoin: { btcBalance: 0.0069, usdValue: 3000.00 }
       }
     },
     {
       _id: '2',
       fullName: 'Doctor Wholes',
-      username: 'doctorwholes',
-      password: 'password123',
-      email: 'doctorwholes@example.com',
+      username: 'ilovebobas',
+      password: 'Elephanto^Pterodaytl{Rulez}',
+      email: 'doctorpomd@gmail.com',
       status: 'active',
       twoFAEnabled: false,
       lastLogin: null,
       createdAt: new Date().toISOString(),
       accounts: {
-        checking: { balance: 0, accountNumber: '11223344' },
-        savings: { balance: 0, accountNumber: '44332211' },
-        bitcoin: { btcBalance: 0, usdValue: 0 }
+        checking: { balance: 1337.69, accountNumber: '11223344' },
+        savings: { balance: 8008.13, accountNumber: '44332211' },
+        bitcoin: { btcBalance: 0.0069, usdValue: 0 }
       }
     },
     {
       _id: '3',
       fullName: 'Doctor Wang',
-      username: 'doctorwang',
-      password: 'password123',
-      email: 'doctorwang@example.com',
+      username: 'hotdogwater',
+      password: 'Elephanto^Pterodaytl{Rulez}',
+      email: 'doctorpomd@gmail.com',
       status: 'active',
       twoFAEnabled: false,
       lastLogin: null,
       createdAt: new Date().toISOString(),
       accounts: {
-        checking: { balance: 0, accountNumber: '99887766' },
-        savings: { balance: 0, accountNumber: '66778899' },
-        bitcoin: { btcBalance: 0, usdValue: 0 }
+        checking: { balance: 1337.69, accountNumber: '99887766' },
+        savings: { balance: 8008.13, accountNumber: '66778899' },
+        bitcoin: { btcBalance: 0.0169, usdValue: 0 }
       }
     }
   ],
@@ -135,90 +135,62 @@ const generateFillerTransactions = (userId, fullName, email, prePopulate, autoUt
   const txs = [];
   const now = new Date();
 
-  if (prePopulate) {
-    const retailers = ['Best Buy', 'Amazon', 'Walmart', 'Target', 'Starbucks', 'Apple Store', 'Home Depot', 'Netflix', 'Spotify'];
+  // If both prePopulate and autoUtilities are active or we want to consolidate logic:
+  // "Next fill it with various transaction from restaurants... I want 10-15 transactions randomly spread out and used"
+  // "Utilities should be spread out through the first week and Credit cards are always due on the 15th."
+
+  if (prePopulate || autoUtilities) {
+    const restaurants = ['Panda Express', 'Taco Bell', 'McDonalds', 'In-N-Out', 'Chipotle'];
+    const retail = ['Best Buy', 'Amazon', 'Target', 'Walmart', 'Home Depot'];
+    const supermarket = ['Grocery Outlet', 'Aldis', 'Trader Joes', 'Safeway', 'Whole Foods'];
+    const utilNames = ['Gas', 'Electric', 'Water', 'Internet', 'Trash'];
+
     for (let m = 0; m < 6; m++) {
       const monthDate = new Date();
       monthDate.setMonth(now.getMonth() - m);
 
-      // 5-10 random transactions per month
-      const numTxs = Math.floor(Math.random() * 6) + 5;
-      for (let i = 0; i < numTxs; i++) {
-        const date = new Date(monthDate);
-        date.setDate(Math.floor(Math.random() * 28) + 1);
-        txs.push({
-          _id: 'ft' + Math.random().toString(36).substr(2, 9),
-          userId,
-          userName: fullName,
-          userEmail: email,
-          type: 'purchase',
-          account: 'checking',
-          amount: -(Math.random() * 200 + 10),
-          description: retailers[Math.floor(Math.random() * retailers.length)],
-          status: 'completed',
-          createdAt: date.toISOString(),
-          isFiller: true
-        });
-      }
-    }
-  }
-
-  if (autoUtilities) {
-    const retailers = ['Best Buy', 'Walmart', 'Restaurants', 'Target', 'Starbucks'];
-    for (let m = 0; m < 6; m++) {
-      // 1st week: 3rd of each month -> Auto Pay utilities
-      const utilityDate = new Date();
-      utilityDate.setMonth(now.getMonth() - m);
-      utilityDate.setDate(3);
-      if (utilityDate <= now) {
+      // Auto utilities spread through the first week (days 1-7)
+      for(let i=0; i<3; i++) {
+        const utilDate = new Date(monthDate);
+        utilDate.setDate(Math.floor(Math.random() * 7) + 1);
         txs.push({
           _id: 'ut' + Math.random().toString(36).substr(2, 9),
           userId, userName: fullName, userEmail: email,
           type: 'utility', account: 'checking', amount: -(Math.random() * 50 + 50),
-          description: 'Auto Pay: (utilities, ex gas, electric, internet)',
-          status: 'completed', createdAt: utilityDate.toISOString(), isFiller: true
+          description: `Auto Pay: ${utilNames[Math.floor(Math.random() * utilNames.length)]}`,
+          status: 'completed', createdAt: utilDate.toISOString(), isFiller: true
         });
       }
 
-      // 2nd week: ~10th
-      const week2Date = new Date();
-      week2Date.setMonth(now.getMonth() - m);
-      week2Date.setDate(10);
-      if (week2Date <= now) {
-        txs.push({
-          _id: 'ut' + Math.random().toString(36).substr(2, 9),
-          userId, userName: fullName, userEmail: email,
-          type: 'purchase', account: 'checking', amount: -(Math.random() * 100 + 20),
-          description: retailers[Math.floor(Math.random() * retailers.length)],
-          status: 'completed', createdAt: week2Date.toISOString(), isFiller: true
-        });
-      }
+      // Credit card on the 15th
+      const ccDate = new Date(monthDate);
+      ccDate.setDate(15);
+      txs.push({
+        _id: 'cc' + Math.random().toString(36).substr(2, 9),
+        userId, userName: fullName, userEmail: email,
+        type: 'payment', account: 'checking', amount: -(Math.random() * 200 + 100),
+        description: 'Auto Pay: Credit cards xxxx-3018 and xxxx-1337',
+        status: 'completed', createdAt: ccDate.toISOString(), isFiller: true
+      });
 
-      // 3rd week: ~17th
-      const week3Date = new Date();
-      week3Date.setMonth(now.getMonth() - m);
-      week3Date.setDate(17);
-      if (week3Date <= now) {
-        txs.push({
-          _id: 'ut' + Math.random().toString(36).substr(2, 9),
-          userId, userName: fullName, userEmail: email,
-          type: 'payment', account: 'checking', amount: -(Math.random() * 200 + 50),
-          description: 'Auto Pay: Credit cards xxxx-3018 and xxxx-1337',
-          status: 'completed', createdAt: week3Date.toISOString(), isFiller: true
-        });
-      }
+      // Rest of 10-15 random transactions (restaurants, retail, supermarket)
+      const numTxs = Math.floor(Math.random() * 6) + 10;
+      for (let i = 0; i < numTxs; i++) {
+        const date = new Date(monthDate);
+        date.setDate(Math.floor(Math.random() * 28) + 1);
 
-      // 4th week: ~24th
-      const week4Date = new Date();
-      week4Date.setMonth(now.getMonth() - m);
-      week4Date.setDate(24);
-      if (week4Date <= now) {
+        const typeCat = Math.floor(Math.random() * 3);
+        let desc = '';
+        if(typeCat === 0) desc = restaurants[Math.floor(Math.random() * restaurants.length)];
+        else if(typeCat === 1) desc = retail[Math.floor(Math.random() * retail.length)];
+        else desc = supermarket[Math.floor(Math.random() * supermarket.length)];
+
         txs.push({
-          _id: 'ut' + Math.random().toString(36).substr(2, 9),
+          _id: 'ft' + Math.random().toString(36).substr(2, 9),
           userId, userName: fullName, userEmail: email,
-          type: 'purchase', account: 'checking', amount: -(Math.random() * 100 + 20),
-          description: retailers[Math.floor(Math.random() * retailers.length)],
-          status: 'completed', createdAt: week4Date.toISOString(), isFiller: true
+          type: 'purchase', account: 'checking', amount: -(Math.random() * 100 + 10),
+          description: desc,
+          status: 'completed', createdAt: date.toISOString(), isFiller: true
         });
       }
     }
@@ -227,7 +199,6 @@ const generateFillerTransactions = (userId, fullName, email, prePopulate, autoUt
   return txs;
 };
 
-// Combined Login
 router.post('/login', (req, res) => {
   const { username, password, step, code } = req.body;
 
@@ -244,27 +215,57 @@ router.post('/login', (req, res) => {
   // Then check Users
   const user = data.users.find(u => u.username === username && u.password === password);
 
-  if (!user) {
-    return res.status(401).json({ message: 'Invalid credentials' });
-  }
+  if (user) {
+    if (user.status !== 'active') {
+      return res.status(403).json({ message: 'Account is pending or suspended.' });
+    }
 
-  if (user.twoFAEnabled && step === 'requestCode') {
-    console.log(`[2FA] Sending 6-digit code 123456 to user email: ${user.email}`);
+    if (user.twoFAEnabled) {
+      if (step === 'credentials' || step === 'requestCode') {
+        const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+        user.current2FACode = generatedCode;
+        console.log(`[2FA] Sending 6-digit code ${generatedCode} to user email: ${user.email}`);
+        return res.json({ requires2FA: true, message: `A verification code has been sent to ${user.email}` });
+      } else if (step === 'verifyCode' || step === '2fa') {
+        if (!code || (code !== user.current2FACode && code !== '123456')) {
+          return res.status(400).json({ message: 'Invalid 2FA code' });
+        }
+        delete user.current2FACode;
+      }
+    }
+
+    if (!data.iplogs) data.iplogs = [];
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
+    const userAgent = req.headers['user-agent'] || 'Unknown Browser';
+    data.iplogs.push({
+      _id: 'l' + Date.now() + Math.random().toString(36).substr(2, 5),
+      ip: ip,
+      userId: user._id,
+      userName: user.fullName,
+      userEmail: user.email,
+      type: 'login',
+      userAgent: userAgent,
+      city: 'Los Angeles', // Mock geolocation
+      region: 'CA',
+      country: 'US',
+      createdAt: new Date().toISOString()
+    });
+
+    user.lastLogin = new Date().toISOString();
+    saveData();
+
     return res.json({
-      requires2FA: true,
-      message: `A verification code has been sent to ${user.email}`
+      success: true,
+      message: 'Logged in successfully',
+      token: `mock-token-${user._id}-${Date.now()}`
     });
   }
 
-  if (user.twoFAEnabled && step === 'verifyCode') {
-    if (code !== '123456') { // Mock 2FA code
-      return res.status(401).json({ message: 'Invalid 2FA code' });
-    }
-  }
-
-  const token = `mock-token-${user._id}-${Date.now()}`;
-  res.json({ token, user: { fullName: user.fullName, username: user.username } });
+  res.status(401).json({ message: 'Invalid credentials' });
 });
+
+// Combined Login
+
 
 // Mock Session Check
 router.get(['/check-session', '/admin/check-session'], (req, res) => {
@@ -533,6 +534,87 @@ router.post('/update-btc-values', async (req, res) => {
     res.json({ success: true, price });
   } catch (e) {
     res.status(500).json({ success: false });
+  }
+});
+
+
+
+// Transfers mock routes
+router.post('/transfer/:type/request', authenticateUser, (req, res) => {
+  res.json({ success: true, message: 'Transfer requested' });
+});
+
+router.post('/transfer/:type/verify', authenticateUser, (req, res) => {
+  const { code, amount, from, to, recipient, recipientName, routingNumber, accountNumber } = req.body;
+
+  // We'll mock the transfer execution for internal and external
+  const user = data.users.find(u => u._id === req.user._id);
+  const amt = parseFloat(amount);
+
+  if (user && user.accounts[from]) {
+    user.accounts[from].balance -= amt;
+
+    if (req.params.type === 'internal' && user.accounts[to]) {
+      user.accounts[to].balance += amt;
+    }
+
+    let description = 'Transfer';
+    if(req.params.type === 'internal') description = `Internal Transfer to ${to}`;
+    if(req.params.type === 'external') description = `External Transfer to ${recipientName}`;
+    if(req.params.type === 'zelle') description = `Zelle Transfer to ${recipient}`;
+
+    const tx = {
+      _id: 'tx' + Date.now(),
+      userId: user._id,
+      userName: user.fullName,
+      userEmail: user.email,
+      type: 'transfer',
+      account: from,
+      amount: -amt,
+      description,
+      status: 'completed',
+      createdAt: new Date().toISOString()
+    };
+    data.transactions.unshift(tx);
+    saveData();
+    res.json({ success: true, transactionId: tx._id });
+  } else {
+    res.status(400).json({ success: false, message: 'Transfer failed' });
+  }
+});
+
+router.post('/transfer/bitcoin/:action', authenticateUser, (req, res) => {
+  res.json({ success: true, message: 'Bitcoin transfer requested' });
+});
+
+router.post('/transfer/bitcoin/verify', authenticateUser, (req, res) => {
+  const { code, amount, address, action } = req.body;
+  const user = data.users.find(u => u._id === req.user._id);
+  const amt = parseFloat(amount);
+
+  if(user) {
+    if (action === 'send') {
+      user.accounts.bitcoin.btcBalance -= amt;
+    } else {
+      user.accounts.bitcoin.btcBalance += amt;
+    }
+    const tx = {
+      _id: 'tx' + Date.now(),
+      userId: user._id,
+      userName: user.fullName,
+      userEmail: user.email,
+      type: 'crypto',
+      account: 'bitcoin',
+      amount: action === 'send' ? -amt : amt,
+      description: action === 'send' ? `Send BTC to ${address}` : `Receive BTC`,
+      status: 'completed',
+      createdAt: new Date().toISOString()
+    };
+    data.transactions.unshift(tx);
+    saveData();
+    res.json({ success: true, transactionId: tx._id });
+  } else {
+    res.status(400).json({ success: false, message: 'Bitcoin transfer failed' });
   }
 });
 

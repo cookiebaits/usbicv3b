@@ -284,7 +284,7 @@ export default function AdminUsersPage() {
               <p className="text-slate-500 font-medium">No users found</p>
             </div>
           ) : (
-            <div className="overflow-x-auto overflow-visible">
+            <div className="overflow-x-auto overflow-visible pb-32">
               <table className="w-full">
                 <thead className="bg-slate-50 border-b border-slate-100">
                   <tr>

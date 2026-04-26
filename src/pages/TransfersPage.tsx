@@ -23,7 +23,9 @@ export default function TransfersPage() {
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
   const [error, setError] = useState('');
-  const [step, setStep] = useState<'form' | 'verify' | 'success'>('form');
+  const [step, setStep] = useState<'form' | 'captcha' | '2fa' | 'verify' | 'success'>('form');
+  const [captcha, setCaptcha] = useState({ question: '2 + 5 * 4', answer: 22 });
+  const [captchaInput, setCaptchaInput] = useState('');
   const [verifyCode, setVerifyCode] = useState('');
   const [successData, setSuccessData] = useState<Record<string, string>>({});
   const [recentContacts, setRecentContacts] = useState<Contact[]>([]);
@@ -44,20 +46,57 @@ export default function TransfersPage() {
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Internal goes directly to verify
+    if (activeTab === 'internal') {
+      setLoading(true);
+      try {
+        await apiFetch(`/api/transfer/${activeTab}/request`, {
+          method: 'POST',
+          body: JSON.stringify(internalForm),
+        });
+        setStep('verify');
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Transfer failed. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // External goes to captcha first
+      setStep('captcha');
+    }
+  }, [activeTab, internalForm]);
+
+  const handleCaptchaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if(parseInt(captchaInput) !== captcha.answer) {
+      setError('Incorrect answer.');
+      return;
+    }
+    setError('');
     setLoading(true);
     try {
-      const form = activeTab === 'internal' ? internalForm : activeTab === 'external' ? externalForm : zelleForm;
+      const form = activeTab === 'external' ? externalForm : zelleForm;
+      // Request standard transfer which normally doesn't trigger 2fa,
+      // but we need to trigger 2FA specifically. We will just reuse the login 2fa logic or mock it.
+      // We will actually just show 2FA step now.
+
+      // We will assume backend doesn't strictly need a 'requestCode' for transfers since it's not implemented,
+      // But we will transition to '2fa' step to ask for the code.
+      // In a real app we would send the 2FA code here.
+      // We'll call the request endpoint just to validate the form.
       await apiFetch(`/api/transfer/${activeTab}/request`, {
         method: 'POST',
         body: JSON.stringify(form),
       });
-      setStep('verify');
+      setStep('2fa');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Transfer failed. Please try again.');
     } finally {
       setLoading(false);
     }
-  }, [activeTab, internalForm, externalForm, zelleForm]);
+  };
+
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();

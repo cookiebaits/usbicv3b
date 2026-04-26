@@ -1,3 +1,4 @@
+import { useSettings } from '../context/SettingsContext';
 import { useNavigate } from 'react-router-dom';
 import { Shield, ArrowLeft } from 'lucide-react';
 
@@ -37,6 +38,8 @@ const sections = [
 ];
 
 export default function PrivacyPolicyPage() {
+  const { settings } = useSettings();
+
   const navigate = useNavigate();
 
   return (
@@ -51,7 +54,7 @@ export default function PrivacyPolicyPage() {
             <div className="w-7 h-7 bg-primary-600 rounded-lg flex items-center justify-center">
               <Shield className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-slate-900">SecureBank</span>
+            <span className="font-bold text-slate-900">{settings.siteName}</span>
           </div>
         </div>
       </nav>
@@ -64,7 +67,7 @@ export default function PrivacyPolicyPage() {
 
         <div className="card p-8 space-y-8">
           <p className="text-slate-600 leading-relaxed">
-            At SecureBank, your privacy is our priority. This Privacy Policy explains how we collect, use, and protect your personal information when you use our banking services.
+            At {settings.siteName}, your privacy is our priority. This Privacy Policy explains how we collect, use, and protect your personal information when you use our banking services.
           </p>
 
           {sections.map((section) => (
@@ -79,7 +82,7 @@ export default function PrivacyPolicyPage() {
             <p className="text-slate-600 text-sm leading-relaxed">
               If you have questions about this Privacy Policy or how we handle your data, please contact us at{' '}
               <a href="mailto:privacy@securebank.io" className="text-primary-600 hover:text-primary-700 font-medium">privacy@securebank.io</a>{' '}
-              or write to us at SecureBank Privacy Team, 123 Financial District, New York, NY 10004.
+              or write to us at {settings.siteName} Privacy Team, 123 Financial District, New York, NY 10004.
             </p>
           </div>
         </div>

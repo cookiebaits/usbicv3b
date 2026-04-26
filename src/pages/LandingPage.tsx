@@ -1,3 +1,4 @@
+import { useSettings } from "../context/SettingsContext";
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -89,6 +90,7 @@ const cryptos = [
 ];
 
 export default function LandingPage() {
+  const { settings } = useSettings();
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
@@ -390,7 +392,7 @@ export default function LandingPage() {
               <p className="font-semibold text-white text-sm mb-4">Support</p>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> support@usbanking.icu</li>
-                <li className="flex items-center gap-2"><Phone className="w-4 h-4" /> 1-800-TIDI-BANK</li>
+                <li className="flex items-center gap-2"><Phone className="w-4 h-4" /> {settings.supportPhone}</li>
               </ul>
             </div>
           </div>

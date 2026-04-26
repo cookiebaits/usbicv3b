@@ -1,7 +1,10 @@
+import { useSettings } from '../context/SettingsContext';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, Shield, ArrowRight } from 'lucide-react';
 
 export default function RegistrationSuccessPage() {
+  const { settings } = useSettings();
+
   const navigate = useNavigate();
 
   return (
@@ -13,7 +16,7 @@ export default function RegistrationSuccessPage() {
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mb-3">Account Created!</h1>
           <p className="text-slate-500 leading-relaxed mb-8">
-            Your SecureBank account has been created successfully. Your checking and savings accounts are ready, and your crypto wallet has been set up.
+            Your {settings.siteName} account has been created successfully. Your checking and savings accounts are ready, and your crypto wallet has been set up.
           </p>
 
           <div className="space-y-3 mb-8 text-left">

@@ -1,10 +1,11 @@
+import { useSettings } from '../context/SettingsContext';
 import { useNavigate } from 'react-router-dom';
 import { Shield, ArrowLeft } from 'lucide-react';
 
 const sections = [
   {
     title: '1. Acceptance of Terms',
-    content: 'By accessing or using SecureBank\'s services, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any part of these terms, you may not use our services.',
+    content: 'By accessing or using {settings.siteName}\'s services, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any part of these terms, you may not use our services.',
   },
   {
     title: '2. Eligibility',
@@ -28,7 +29,7 @@ const sections = [
   },
   {
     title: '7. Limitation of Liability',
-    content: 'SecureBank is not liable for indirect, incidental, or consequential damages arising from your use of our services. Our total liability shall not exceed the fees paid by you in the three months preceding the claim.',
+    content: '{settings.siteName} is not liable for indirect, incidental, or consequential damages arising from your use of our services. Our total liability shall not exceed the fees paid by you in the three months preceding the claim.',
   },
   {
     title: '8. Termination',
@@ -41,6 +42,8 @@ const sections = [
 ];
 
 export default function TermsPage() {
+  const { settings } = useSettings();
+
   const navigate = useNavigate();
 
   return (
@@ -55,7 +58,7 @@ export default function TermsPage() {
             <div className="w-7 h-7 bg-primary-600 rounded-lg flex items-center justify-center">
               <Shield className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-slate-900">SecureBank</span>
+            <span className="font-bold text-slate-900">{settings.siteName}</span>
           </div>
         </div>
       </nav>
@@ -68,7 +71,7 @@ export default function TermsPage() {
 
         <div className="card p-8 space-y-8">
           <p className="text-slate-600 leading-relaxed">
-            These Terms of Service govern your use of SecureBank&apos;s banking platform and services. Please read these terms carefully before using our services.
+            These Terms of Service govern your use of {settings.siteName}&apos;s banking platform and services. Please read these terms carefully before using our services.
           </p>
 
           {sections.map((section) => (

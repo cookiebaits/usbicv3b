@@ -1,8 +1,11 @@
+import { useSettings } from '../context/SettingsContext';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Shield, ArrowLeft, Loader2, AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide-react';
 
 export default function ForgotPasswordPage() {
+  const { settings } = useSettings();
+
   const navigate = useNavigate();
   const [step, setStep] = useState<'email' | 'code' | 'password' | 'done'>('email');
   const [email, setEmail] = useState('');
@@ -71,7 +74,7 @@ export default function ForgotPasswordPage() {
           <div className="w-8 h-8 bg-primary-600 rounded-xl flex items-center justify-center">
             <Shield className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-lg text-slate-900">SecureBank</span>
+          <span className="font-bold text-lg text-slate-900">{settings.siteName}</span>
         </div>
 
         <div className="card p-8">

@@ -1,8 +1,11 @@
+import { useSettings } from '../../context/SettingsContext';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Shield, Eye, EyeOff, Lock, Loader2, AlertCircle, ArrowLeft, Check } from 'lucide-react';
 
 export default function AdminLoginPage() {
+  const { settings } = useSettings();
+
   const navigate = useNavigate();
   const location = useLocation();
   const [step, setStep] = useState<'credentials' | '2fa'>('credentials');
@@ -100,7 +103,7 @@ export default function AdminLoginPage() {
             <Shield className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white">Admin Portal</h1>
-          <p className="text-slate-400 text-sm mt-1">SecureBank Administration</p>
+          <p className="text-slate-400 text-sm mt-1">{settings.siteName} Administration</p>
         </div>
 
         <div className="bg-slate-800/50 border border-white/10 backdrop-blur-sm rounded-2xl p-8">

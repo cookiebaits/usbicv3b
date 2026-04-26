@@ -43,9 +43,20 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+
   useEffect(() => {
     refreshSettings();
   }, []);
+
+  useEffect(() => {
+    if (settings.siteName) {
+      document.title = settings.siteName;
+    }
+    if (settings.primaryColor) {
+      document.documentElement.style.setProperty('--color-primary', settings.primaryColor);
+    }
+  }, [settings.siteName, settings.primaryColor]);
+
 
   const updateSettings = (newSettings: Partial<Settings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));

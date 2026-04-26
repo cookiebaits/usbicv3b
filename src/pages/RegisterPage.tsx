@@ -1,3 +1,4 @@
+import { useSettings } from '../context/SettingsContext';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Shield, Eye, EyeOff, Loader2, AlertCircle, Check, ArrowLeft, ArrowRight } from 'lucide-react';
@@ -26,6 +27,8 @@ const US_STATES = [
 ];
 
 export default function RegisterPage() {
+  const { settings } = useSettings();
+
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -155,7 +158,7 @@ export default function RegisterPage() {
             <Shield className="w-6 h-6 text-white" />
           </div>
           <h2 className="text-3xl font-bold text-white mb-3">Create your free account</h2>
-          <p className="text-slate-400 text-sm leading-relaxed">Join over 2 million users who trust SecureBank for their daily banking.</p>
+          <p className="text-slate-400 text-sm leading-relaxed">Join over 2 million users who trust {settings.siteName} for their daily banking.</p>
         </div>
         <div className="relative space-y-4">
           {['No monthly fees', 'FDIC insured up to $250K', 'Instant Zelle transfers', 'Crypto wallet included'].map((item) => (
@@ -176,7 +179,7 @@ export default function RegisterPage() {
               <div className="w-8 h-8 bg-primary-600 rounded-xl flex items-center justify-center">
                 <Shield className="w-4 h-4 text-white" />
               </div>
-              <span className="font-bold text-lg text-slate-900">SecureBank</span>
+              <span className="font-bold text-lg text-slate-900">{settings.siteName}</span>
             </div>
             <button onClick={() => navigate('/')} className="text-slate-500 hover:text-slate-700 text-sm">
               <ArrowLeft className="w-4 h-4" />
